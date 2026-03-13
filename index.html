@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Can I court you? 💕</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: transparent;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* ---------- blurred background image layer ---------- */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background.jpg') no-repeat center center / cover;
+            filter: blur(5px);
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* floating hearts overlay – full page, no container restrictions */
+        body::before {
+            content: "❤️💕❤️💕";
+            position: fixed;
+            font-size: 40px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.08;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            transform: rotate(-5deg) scale(1.5);
+            animation: heartDrift 18s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes heartDrift {
+            0% { transform: rotate(-5deg) scale(1.5) translateY(0); }
+            50% { transform: rotate(-3deg) scale(1.6) translateY(-12px); }
+            100% { transform: rotate(-5deg) scale(1.5) translateY(0); }
+        }
+
+        /* MAIN LAYOUT – NO CONTAINER AROUND TEXT/BUTTONS */
+        .full-page-message {
+            width: 100%;
+            max-width: 1000px;         /* keeps reading comfortable on large screens */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: transparent;    /* completely gone – no card, no glass */
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+            padding: 15px 15px 30px;
+        }
+
+        /* the question block now sits directly on the blurred background */
+        .question {
+            font-size: clamp(16px, 4.5vw, 26px);
+            color: #2f1420;             /* deep rich tone, readable on light overlay */
+            text-align: center;
+            line-height: 1.7;
+            margin: 10px 0 25px;
+            padding: 18px 20px;
+            font-weight: 470;
+            text-shadow: 0 2px 6px #ffeef2, 0 0 12px #fff0f5; /* luminous glow */
+            width: 100%;
+            background: rgba(255, 240, 245, 0.2); /* just a whisper of warmth */
+            border-radius: 60px 60px 30px 30px;
+            backdrop-filter: blur(2px);  /* barely there, keeps text crisp */
+            border: 1px solid rgba(255, 210, 225, 0.3);
+        }
+
+        .compact-question {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .compact-question span {
+            display: block;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .button-row {
+            display: flex;
+            gap: clamp(30px, 10vw, 70px);
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0 30px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: clamp(26px, 7vw, 40px);
+            padding: 16px 45px;
+            border: none;
+            border-radius: 60px;
+            color: #fef2f5;
+            cursor: pointer;
+            box-shadow: 0 10px 18px rgba(110, 45, 65, 0.4);
+            transition: transform 0.2s ease, box-shadow 0.2s;
+            min-width: 170px;
+            text-align: center;
+            border: 2px solid rgba(255, 230, 240, 0.9);
+            font-weight: 550;
+            letter-spacing: 0.4px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 5px 12px rgba(90, 40, 55, 0.5);
+        }
+
+        .yes-btn {
+            background: linear-gradient(145deg, #dc93a5, #c77b8f);
+            animation: pulseSoft 2.2s infinite;
+        }
+
+        .no-btn {
+            background: linear-gradient(145deg, #b18b98, #a27a88);
+            position: relative;
+        }
+        .no-btn.moved {
+            position: fixed;
+            transition: left 0.18s ease-out, top 0.18s ease-out;
+            z-index: 100;
+            box-shadow: 0 12px 22px rgba(80, 30, 45, 0.5);
+            /* Match original button dimensions exactly */
+            font-size: clamp(26px, 7vw, 40px);
+            padding: 16px 45px;
+            min-width: 170px;
+            max-width: none;
+            white-space: nowrap;
+        }
+
+        .final-section {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            width: 100%;
+            padding: 30px 10px 20px;
+            animation: riseUp 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes riseUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .final-message {
+            font-size: clamp(38px, 9vw, 70px);
+            font-weight: bold;
+            color: #571c32;
+            text-align: center;
+            line-height: 1.2;
+            text-shadow: 0 3px 12px #fcc7d2, 0 0 25px #ffb6c1;
+            word-break: break-word;
+            padding: 0 15px;
+            background: rgba(255, 235, 240, 0.15);
+            backdrop-filter: blur(3px);
+            border-radius: 80px;
+            display: inline-block;
+        }
+
+        .tap-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .tap-label {
+            font-size: clamp(24px, 6vw, 36px);
+            color: #3d1e2b;
+            font-weight: 400;
+            text-shadow: 0 1px 4px #ffe2ea;
+        }
+
+        .me-btn {
+            background: linear-gradient(145deg, #c09daa, #ad8695);
+            font-size: clamp(26px, 6vw, 36px);
+            padding: 14px 40px;
+            min-width: 130px;
+            box-shadow: 0 8px 16px #936d7d70;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes pulseSoft {
+            0% { box-shadow: 0 8px 18px #d88b9e; }
+            50% { box-shadow: 0 12px 28px #e59eb1, 0 0 0 3px rgba(255, 230, 245, 0.7); }
+            100% { box-shadow: 0 8px 18px #d88b9e; }
+        }
+
+        /* Facebook icon stays fixed */
+        .facebook-link {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(145deg, #4267B2, #365899);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            animation: facebookFloat 3s infinite ease-in-out;
+            text-decoration: none;
+        }
+
+        .facebook-link:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 24px rgba(66, 103, 178, 0.5);
+        }
+
+        .facebook-icon {
+            color: white;
+            font-size: 34px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        @keyframes facebookFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Mobile fine-tuning */
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .question {
+                padding: 15px 12px;
+                border-radius: 40px 40px 20px 20px;
+            }
+            .btn {
+                min-width: 140px;
+                padding: 14px 30px;
+            }
+            .facebook-link {
+                width: 52px;
+                height: 52px;
+                bottom: 18px;
+                right: 18px;
+            }
+            .facebook-icon {
+                font-size: 30px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .btn {
+                min-width: 120px;
+                padding: 12px 22px;
+            }
+            .button-row {
+                gap: 15px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 8px;
+            }
+            .question {
+                margin: 5px 0 15px;
+            }
+            .btn {
+                padding: 10px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Facebook icon (fixed) -->
+    <a href="https://facebook.com/xvhocaji" target="_blank" class="facebook-link" id="facebookLink">
+        <span class="facebook-icon">f</span>
+    </a>
+
+    <!-- NO CONTAINER – the romantic text sits directly on background, only semantic grouping -->
+    <div class="full-page-message">
+        <div class="question compact-question" id="question">
+            <span>💭 I was fine. Then you showed up, and everything shifted.</span>
+            <span>I don't just like you, my mind is always on you.</span>
+            <span>You're not my type. You're my exception.</span>
+            <span>I did not fall for you</span>
+            <span>its just around you, gravity feels suspicious.</span>
+            <span>Some people catch feelings. I caught you.</span>
+            <span style="margin-top: 12px; font-weight: 500;">🌹 So I need to ask with intention:</span>
+            <span style="font-size: 1.2em; margin: 8px 0 3px;">Would you let me court you properly,</span>
+            <span>and see where this beautiful feeling leads us?</span>
+        </div>
+
+        <div class="button-row" id="buttonRow">
+            <button class="btn yes-btn" id="yesBtn">Yes</button>
+            <button class="btn no-btn" id="noBtn">No</button>
+        </div>
+
+        <div class="final-section" id="finalSection">
+            <div class="final-message">You've just made my day absolutely perfect. 💖</div>
+            <div class="tap-section">
+                <span class="tap-label">tap to know me</span>
+                <button class="btn me-btn" id="meBtn">me</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Elements – note: there is no .content container anymore
+            const question = document.getElementById('question');
+            const buttonRow = document.getElementById('buttonRow');
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const finalSection = document.getElementById('finalSection');
+            const meBtn = document.getElementById('meBtn');
+            const facebookLink = document.getElementById('facebookLink');
+
+            function isNoInsideRow() {
+                return noBtn.parentNode === buttonRow;
+            }
+
+            function moveNoButton() {
+                if (isNoInsideRow()) {
+                    buttonRow.removeChild(noBtn);
+                    document.body.appendChild(noBtn); // move to body for free positioning
+                    noBtn.classList.add('moved');
+                    noBtn.style.position = 'fixed';
+                }
+
+                noBtn.style.position = 'fixed';
+                noBtn.classList.add('moved');
+
+                const viewportWidth = window.innerWidth;
+                const viewportHeight = window.innerHeight;
+                const btnWidth = noBtn.offsetWidth;
+                const btnHeight = noBtn.offsetHeight;
+
+                // leave generous margins and avoid facebook icon zone (bottom right)
+                const maxX = Math.max(25, viewportWidth - btnWidth - 90);
+                const maxY = Math.max(25, viewportHeight - btnHeight - 90);
+
+                let randomX, randomY;
+
+                if (maxX > 60 && maxY > 60) {
+                    randomX = 20 + Math.floor(Math.random() * (maxX - 30));
+                    randomY = 20 + Math.floor(Math.random() * (maxY - 30));
+                } else {
+                    randomX = 25;
+                    randomY = 25;
+                }
+
+                // additional check to keep away from facebook icon (bottom right)
+                const facebookRect = facebookLink.getBoundingClientRect();
+                const btnRight = randomX + btnWidth;
+                const btnBottom = randomY + btnHeight;
+                
+                if (btnRight > facebookRect.left - 20 && btnBottom > facebookRect.top - 20) {
+                    // reposition toward top-left
+                    randomX = 18;
+                    randomY = 18;
+                }
+
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+                noBtn.style.right = 'auto';
+                noBtn.style.bottom = 'auto';
+                noBtn.style.maxWidth = 'min(170px, 38vw)';
+            }
+
+            function onYes() {
+                question.classList.add('hidden');
+                buttonRow.classList.add('hidden');
+
+                if (!isNoInsideRow()) {
+                    noBtn.classList.add('hidden');
+                }
+
+                finalSection.style.display = 'flex';
+            }
+
+            // No button antics
+            noBtn.addEventListener('mouseenter', moveNoButton);
+            noBtn.addEventListener('touchstart', moveNoButton, { passive: true });
+
+            noBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                moveNoButton();
+            });
+
+            yesBtn.addEventListener('click', onYes);
+
+            meBtn.addEventListener('click', function() {
+                window.open('https://www.facebook.com/61577304986239/posts/pfbid02yyz9ucxRoHzLQ9W5BBrG26wsSCfzfywQHRERXMDqgxPRYGk1BtX7oeBLauuxkKQEl/', '_blank');
+            });
+
+            window.addEventListener('resize', () => {
+                if (!isNoInsideRow() && noBtn.classList.contains('moved') && !noBtn.classList.contains('hidden')) {
+                    moveNoButton();
+                }
+            });
+
+            window.addEventListener('orientationchange', () => {
+                if (!isNoInsideRow() && noBtn.classList.contains('moved') && !noBtn.classList.contains('hidden')) {
+                    setTimeout(moveNoButton, 100);
+                }
+            });
+
+            // extra flee on touch near button
+            document.addEventListener('touchmove', (e) => {
+                if (!isNoInsideRow() && noBtn.classList.contains('moved') && !noBtn.classList.contains('hidden')) {
+                    const touch = e.touches[0];
+                    if (touch) {
+                        const btnRect = noBtn.getBoundingClientRect();
+                        const touchX = touch.clientX;
+                        const touchY = touch.clientY;
+                        
+                        const distance = Math.sqrt(
+                            Math.pow(touchX - (btnRect.left + btnRect.width/2), 2) +
+                            Math.pow(touchY - (btnRect.top + btnRect.height/2), 2)
+                        );
+                        
+                        if (distance < 110) {
+                            moveNoButton();
+                        }
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
